@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:test/test.dart';
-import 'package:forst_eifel/wordpress/wordpress.dart' as wp;
+import 'package:forst_eifel/wordpress/wordpressImpl.dart' as wp;
 import 'common.dart' as common;
 
 void main() async {

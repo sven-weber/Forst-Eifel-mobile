@@ -6,21 +6,18 @@
     "configurations": [
         {
             "name": "Debug",
-            "cwd": "forst_eifel",
             "request": "launch",
             "type": "dart",
             "flutterMode" : "debug"
         }, 
         {
             "name": "Profile",
-            "cwd": "forst_eifel",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         }, 
         {
             "name": "Release",
-            "cwd": "forst_eifel",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

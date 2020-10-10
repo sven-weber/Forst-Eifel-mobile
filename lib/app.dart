@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
-import 'package:forst_eifel/wordpress/wordpress.dart' as wp;
-import 'package:flutter_wordpress/flutter_wordpress.dart' as wordPress;
+import 'package:forst_eifel/wordpress/wordpress.dart';
+import 'di.dart' as di;
 import 'package:cached_network_image/cached_network_image.dart';
 
 class App extends StatelessWidget {
+  WordPress wp;
+
+  ///Constructor for the App Widget
+  App({WordPress wp}) {
+    this.wp = wp ?? di.get<WordPress>();
+  }
+
   // All Theme Settings
   final theme = ThemeData(primaryColor: Color(0xFF6B717E));
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Startup Name Generator', theme: theme, home: Test());
+        title: 'Startup Name Generator', theme: theme, home: Test(wp));
   }
 }
 
@@ -20,15 +27,22 @@ class App extends StatelessWidget {
 // *****************************************
 
 class Test extends StatefulWidget {
+  WordPress wp;
+
+  Test(this.wp);
+
   @override
   _TestState createState() {
-    return _TestState();
+    return _TestState(wp);
   }
 }
 
 class _TestState extends State<Test> {
   String content = 'Hello World \n';
   bool loading = false;
+  WordPress wp;
+
+  _TestState(this.wp);
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +60,8 @@ class _TestState extends State<Test> {
                 });
                 String newContent = '';
                 wp.getPosts().then((value) {
-                  for (wordPress.Post post in value) {
-                    newContent +=
-                        '${post.title.rendered} ${post.author.name} \n';
+                  for (Post post in value) {
+                    newContent += '${post.title.rendered} ${post.authorId} \n';
                   }
                 }).whenComplete(() {
                   setState(() {
@@ -56,11 +69,7 @@ class _TestState extends State<Test> {
                     loading = false;
                   });
                 });
-              }),
-          CachedNetworkImage(
-            placeholder: (context, url) => CircularProgressIndicator(),
-            imageUrl: 'https://picsum.photos/250?image=3',
-          )
+              })
         ])));
   }
 }
@@ -114,12 +123,14 @@ class _RandomWordsState extends State<RandomWords> {
           }
           if (index >= _suggestions.length) {
             //Lets fetch the Posts
+            /*
             var posts = wp.getPosts().then((value) {
               for (wordPress.Post post in value) {
                 _suggestions
                     .add(WordPair(post.title.rendered, post.author.name));
               }
             });
+            */
 
             //_suggestions.add(WordPair('test', 'test'));
           }
