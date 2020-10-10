@@ -1,0 +1,1 @@
+String assetsPath = 'test/wordpress/assets/';

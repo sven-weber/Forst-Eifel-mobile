@@ -1,0 +1,108 @@
+{
+    "id": 751,
+    "date": "2020-10-05T17:39:33",
+    "date_gmt": "2020-10-05T15:39:33",
+    "guid": {
+        "rendered": "https://forst-eifel.de/?p=751"
+    },
+    "modified": "2020-10-05T17:39:35",
+    "modified_gmt": "2020-10-05T15:39:35",
+    "slug": "st-martin-2020",
+    "status": "publish",
+    "type": "post",
+    "link": "https://forst-eifel.de/2020/10/05/st-martin-2020/",
+    "title": {
+        "rendered": "St. Martin 2020"
+    },
+    "content": {
+        "rendered": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor",
+        "protected": false
+    },
+    "excerpt": {
+        "rendered": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor",
+        "protected": false
+    },
+    "author": 1,
+    "featured_media": 222,
+    "comment_status": "closed",
+    "ping_status": "open",
+    "sticky": false,
+    "template": "",
+    "format": "standard",
+    "meta": [],
+    "categories": [
+        1
+    ],
+    "tags": [],
+    "_links": {
+        "self": [
+            {
+                "href": "https://forst-eifel.de/wp-json/wp/v2/posts/751"
+            }
+        ],
+        "collection": [
+            {
+                "href": "https://forst-eifel.de/wp-json/wp/v2/posts"
+            }
+        ],
+        "about": [
+            {
+                "href": "https://forst-eifel.de/wp-json/wp/v2/types/post"
+            }
+        ],
+        "author": [
+            {
+                "embeddable": true,
+                "href": "https://forst-eifel.de/wp-json/wp/v2/users/1"
+            }
+        ],
+        "replies": [
+            {
+                "embeddable": true,
+                "href": "https://forst-eifel.de/wp-json/wp/v2/comments?post=751"
+            }
+        ],
+        "version-history": [
+            {
+                "count": 1,
+                "href": "https://forst-eifel.de/wp-json/wp/v2/posts/751/revisions"
+            }
+        ],
+        "predecessor-version": [
+            {
+                "id": 752,
+                "href": "https://forst-eifel.de/wp-json/wp/v2/posts/751/revisions/752"
+            }
+        ],
+        "wp:featuredmedia": [
+            {
+                "embeddable": true,
+                "href": "https://forst-eifel.de/wp-json/wp/v2/media/222"
+            }
+        ],
+        "wp:attachment": [
+            {
+                "href": "https://forst-eifel.de/wp-json/wp/v2/media?parent=751"
+            }
+        ],
+        "wp:term": [
+            {
+                "taxonomy": "category",
+                "embeddable": true,
+                "href": "https://forst-eifel.de/wp-json/wp/v2/categories?post=751"
+            },
+            {
+                "taxonomy": "post_tag",
+                "embeddable": true,
+                "href": "https://forst-eifel.de/wp-json/wp/v2/tags?post=751"
+            }
+        ],
+        "curies": [
+            {
+                "name": "wp",
+                "href": "https://api.w.org/{rel}",
+                "templated": true
+            }
+        ]
+    }
+}
