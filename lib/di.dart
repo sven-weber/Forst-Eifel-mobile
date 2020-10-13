@@ -3,6 +3,7 @@ import 'package:forst_eifel/wordpress/wordpress.dart';
 import 'package:forst_eifel/wordpress/wordpressImpl.dart';
 import 'package:get_it/get_it.dart';
 
+import 'dart:io';
 import 'settings.dart';
 
 final _getIt = GetIt.instance;
@@ -11,7 +12,8 @@ final _getIt = GetIt.instance;
 // using getIt
 void setupDI() {
   //Register all dependencies that are needed in the App
-  _getIt.registerLazySingleton<WordPress>(() => WordPressImpl(WordPressBaseURL));
+  _getIt.registerFactory<HttpClient>(() => HttpClient());
+  _getIt.registerLazySingleton<WordPress>(() => WordPressImpl(basePath: WordPressBaseURL));
   _getIt.registerSingleton<App>(App());
 }
 

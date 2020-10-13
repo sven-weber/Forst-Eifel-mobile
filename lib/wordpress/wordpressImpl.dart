@@ -1,9 +1,12 @@
-import 'dart:convert';
+import 'package:forst_eifel/di.dart' as di;
+import 'package:forst_eifel/extensions/httpExtensions.dart';
 
-import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:io';
+import 'dart:async';
 
 // *****************************************
-// *********** In- & Exports ***************
+// ******** Library In- & Exports **********
 // *****************************************
 import 'constants.dart';
 import 'wordpress.dart';
@@ -17,17 +20,18 @@ export 'DTO/rederObject.dart';
 // *****************************************
 class WordPressImpl implements WordPress {
   String _basePath;
-  WordPressImpl(String basePath) {
-    this._basePath = basePath.endsWith('/')
-        ? basePath.substring(0, basePath.length - 1)
-        : basePath;
+  HttpClient _client;
+
+  WordPressImpl({String basePath, HttpClient httpClient}) {
+    this._basePath = basePath;
+    _client = httpClient ?? di.get<HttpClient>();
   }
 
   Future<List<Post>> getPosts() async {
-    final response = await http.get('$_basePath$URL_PAGES');
-    if (response.statusCode == 200) {
+    final response = await _client.getUrlWithoutHeader(Uri.parse('$_basePath/$URL_PAGES'));
+    if (response.isSuccessful()) {
       List<Post> posts = List();
-      final list = json.decode(response.body);
+      final list = json.decode(await (response.readAsString()));
       for (final post in list) {
         posts.add(Post.fromJson(post));
       }
