@@ -1,4 +1,4 @@
-class WordPressError {
+class WordPressError implements Exception {
   ///Error code
   String code;
 

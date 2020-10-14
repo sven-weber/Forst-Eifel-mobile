@@ -14,12 +14,16 @@ void main() async {
 
   group('DTO Tests', () {
     test('Json Redered Object Parsing', () {
+      //Act
       RenderObject object = RenderObject.fromJson(json.decode(objectJson));
+      //Assert
       expect(object.rendered, 'https://forst-eifel.de/?p=751');
     });
 
     test('Json Post Parsing', () {
+      //Act
       Post post = Post.fromJson(json.decode(postJson));
+      //Assert
       expect(post.id, 751);
       expect(post.date, '2020-10-05T17:39:33');
       expect(post.authorId, 1);
@@ -30,7 +34,9 @@ void main() async {
     });
 
     test('WordPressError Parsing', () {
+      //Act
       WordPressError err = WordPressError.fromJson(json.decode(errorJson));
+      //Assert
       expect(err.code, 'rest_post_invalid_id');
       expect(err.message, 'Ungültige Beitrags-ID.');
     });
