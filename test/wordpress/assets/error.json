@@ -1,0 +1,7 @@
+{
+    "code": "rest_post_invalid_id",
+    "message": "Ungültige Beitrags-ID.",
+    "data": {
+        "status": 404
+    }
+}
