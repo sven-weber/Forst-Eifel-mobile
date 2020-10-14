@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
-import 'package:forst_eifel/wordpress/wordpress.dart';
+import 'package:forst_eifel/wordpress/wordPress.dart';
 import 'di.dart' as di;
 import 'package:cached_network_image/cached_network_image.dart';
 
