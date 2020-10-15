@@ -3,6 +3,7 @@ import 'package:english_words/english_words.dart';
 import 'package:forst_eifel/wordpress/wordPress.dart';
 import 'di.dart' as di;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:forst_eifel/widgets/postWidget.dart';
 
 class App extends StatelessWidget {
   WordPress wp;
@@ -38,9 +39,10 @@ class Test extends StatefulWidget {
 }
 
 class _TestState extends State<Test> {
-  String content = 'Hello World \n';
   bool loading = false;
+  bool pressed = false;
   WordPress wp;
+  Post post;
 
   _TestState(this.wp);
 
@@ -48,7 +50,35 @@ class _TestState extends State<Test> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Wordpress Article')),
-        body: Center(
+        body: Column(children: [
+          Visibility(child: CircularProgressIndicator(), visible: loading),
+          Visibility(child: PostWidget(post), visible: !loading && pressed), 
+          FlatButton(
+            child: Text('Load Post'), 
+            onPressed: ()
+            {
+              setState(() => loading = true);
+              wp.getPost(748)
+                .then((res) {
+                  setState(() 
+                  {
+                      post = res;
+                  });
+                })
+                .whenComplete(() => setState(() {
+                  loading = false;
+                  pressed = true;
+                }));
+            }
+          )]
+        )
+    );
+  }
+}
+
+/*
+
+Center(
             child: Column(children: <Widget>[
           Text(content),
           Visibility(child: CircularProgressIndicator(), visible: loading),
@@ -71,9 +101,7 @@ class _TestState extends State<Test> {
                 });
               })
         ])));
-  }
-}
-
+*/
 class RandomWords extends StatefulWidget {
   @override
   _RandomWordsState createState() {

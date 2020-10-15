@@ -50,8 +50,29 @@ class WordPressImpl implements WordPress {
   }
 
   // ******** public Methods  **********
+  Future<Post> getPost(int id) async {
+    Uri target = _getUri('/$URL_POSTS/$id', {'_fields': test.join(',')});
+
+    // Perform request and check for failure
+    var request = await _client.tryGet(target);
+    if (request[0] == null) throw WordPressError(message: request[1]);
+    http.Response response = request[0];
+
+    // Try to decode json, check for failure
+    var decode = response.tryDecodeJson(response);
+    if (decode[0] == null) throw WordPressError(message: decode[1]);
+    var json = decode[0];
+
+    if (response.isSuccessful()) {
+      //Handle Successfull request
+      return Post.fromJson(json);
+    } else {
+      throw WordPressError.fromJson(json);
+    }
+  }
+
   Future<List<Post>> getPosts() async {
-    Uri target = _getUri('/$URL_PAGES', {'_fields': test.join(',')});
+    Uri target = _getUri('/$URL_POSTS', {'_fields': test.join(',')});
 
     // Perform request and check for failure
     var request = await _client.tryGet(target);
