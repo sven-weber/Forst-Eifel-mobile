@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forst_eifel/wordpress/wordPress.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share/share.dart'; 
 
 class PostDetailsWidget extends StatelessWidget {
   //Post that should be displayed in the Widget
@@ -46,13 +47,35 @@ class PostDetailsWidget extends StatelessWidget {
 
     //Finally the text section
     Widget textSection = Container(
-      padding: const EdgeInsets.only(left: 20, right:20, top: 10), 
+      padding: const EdgeInsets.only(left: 20, right:20, top: 10, bottom: 40), 
       child: Html(data: _post.content?.rendered)
     ); 
   
     //Bottom Section that displays a share Button
     Widget bottomSection = Row(
-
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () => _sharePost(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.share),
+                Container(
+                  margin: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    'Teilen',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400
+                    ),
+                  ),
+                ),
+              ],
+            )
+          )
+        ],
     );
 
     return Scaffold(
@@ -90,5 +113,10 @@ class PostDetailsWidget extends StatelessWidget {
       //TODO: Log that opening failed
       _scaffoldKey.currentState.showSnackBar(browserError);
     }
+  }
+
+  void _sharePost()
+  {
+     Share.share('Sieh dir diese Ankündigung von Forst (Eifel) an! \n ${_post.link}', subject: _post.title?.rendered); 
   }
 }

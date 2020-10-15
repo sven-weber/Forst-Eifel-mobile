@@ -12,8 +12,7 @@ class PostWidget extends StatelessWidget {
 
   // Naviages to the Detailed page for this Post
   void _routeToDetails(BuildContext context) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => PostDetailsWidget(_post)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => PostDetailsWidget(_post)));
   }
 
   @override
