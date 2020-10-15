@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forst_eifel/widgets/postDetailsWidget.dart';
 import 'package:forst_eifel/wordpress/wordPress.dart';
 import 'package:html/parser.dart';
 
@@ -9,41 +10,56 @@ class PostWidget extends StatelessWidget {
   //Create a new Post Widget, provide the post that should be displayed
   PostWidget(this._post);
 
+  // Naviages to the Detailed page for this Post
+  void _routeToDetails(BuildContext context) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => PostDetailsWidget(_post)));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(20),
-      child: Card(
+
+    //First Build the Text Section
+    Widget textSection = Container(
+        padding: const EdgeInsets.only(top: 8, left: 5, right: 5, bottom: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Image.asset(
-              'images/test.jpg',
-              width: 600,
-              height: 240,
-              fit: BoxFit.cover
+            Text(
+              _post.title.rendered,
+              textAlign: TextAlign.left,
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)
             ),
             Container(
-              padding: const EdgeInsets.only(top: 8, left: 5, right: 5, bottom: 8), 
-              child: Column(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                getContentPreview(_post),
+                softWrap: true
+              )
+            )
+          ],
+        )
+    );
+
+    //Then return the actual Card holding all Information
+    return GestureDetector(
+        onTap: () => _routeToDetails(context),
+        child: Card(
+            margin: const EdgeInsets.all(20),
+            child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    _post.title.rendered,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)
-                  ), 
-                  Container(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      getContentPreview(_post), 
-                      softWrap: true,
-                    )
-                  )
-              ],
-              )  
-            ),
-        ])));
+                  Image.asset(
+                    'images/test.jpg',
+                    width: 550,
+                    height: 220,
+                    fit: BoxFit.cover
+                  ),
+                  textSection
+                ]
+            )
+        )
+      );
   }
 
   String getContentPreview(Post post) {
@@ -51,7 +67,8 @@ class PostWidget extends StatelessWidget {
     final document = parse(post.content?.rendered);
     String text = parse(document.body.text).documentElement.text;
     //If the text if only short return
-    if(text.length < 150) return text;
+    if (text.length == 0) return 'Kein Vorschautext verfügbar.';
+    if (text.length < 150) return text;
     //Else cut to 50 characters
     //get the first space from index 50 backwards
     int lastIndex = text.lastIndexOf(' ', 149);

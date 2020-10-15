@@ -25,7 +25,12 @@ void main() async {
       Post post = Post.fromJson(json.decode(postJson));
       //Assert
       expect(post.id, 751);
-      expect(post.date, '2020-10-05T17:39:33');
+      expect(post.date.day, 5);
+      expect(post.date.month, 10); 
+      expect(post.date.year, 2020); 
+      expect(post.date.hour, 17); 
+      expect(post.date.minute, 39); 
+      expect(post.date.second, 33);
       expect(post.authorId, 1);
       expect(post.link, 'https://forst-eifel.de/2020/10/05/st-martin-2020/');
       expect(post.title?.rendered, 'St. Martin 2020');

@@ -5,7 +5,7 @@ class Post {
   int id;
 
   /// Date the Post was published in the sides Timezone
-  String date;
+  DateTime date;
 
   /// Weblink to the Post (For opening in a browser)
   String link;
@@ -27,7 +27,7 @@ class Post {
   // *****************************************
   Post.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    date = json['date'];
+    date = DateTime.parse(json['date']);
     link = json['link'];
     title = RenderObject.fromJson(json['title']);
     content = RenderObject.fromJson(json['content']);
