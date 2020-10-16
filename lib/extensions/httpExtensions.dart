@@ -17,7 +17,7 @@ extension AdditionalRequests on http.Client {
   }
 }
 
-extension BodyParsing on http.Response {
+extension ResponseExtensions on http.Response {
   
   /// Trys to decode the response body using json
   /// Returns list [dynamic, errorMsg] with dynamic containing the json object.
