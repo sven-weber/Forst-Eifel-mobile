@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
 import 'package:forst_eifel/wordpress/wordPress.dart';
 import 'di.dart' as di;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:forst_eifel/widgets/postWidget.dart';
+import 'package:after_layout/after_layout.dart';
 
 class App extends StatelessWidget {
   WordPress wp;
@@ -38,152 +38,74 @@ class Test extends StatefulWidget {
   }
 }
 
-class _TestState extends State<Test> {
-  bool loading = false;
-  bool pressed = false;
+class _TestState extends State<Test> with AfterLayoutMixin<Test> {
+  bool loading = true;
   WordPress wp;
-  Post post;
+  List<PostWidget> postWidgets = List<PostWidget>();
+  int totalPages = 1; 
+  int currentPage = 0; 
 
-  _TestState(this.wp);
+  _TestState(this.wp); 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Wordpress Article')),
-        body: Column(children: [
-          Visibility(child: CircularProgressIndicator(), visible: loading),
-          Visibility(child: PostWidget(post), visible: !loading && pressed), 
-          FlatButton(
-            child: Text('Load Post'), 
-            onPressed: ()
+        body: ListView.builder(
+          itemCount: postWidgets.length + 1,
+          itemBuilder: (BuildContext context, int index)
+          {
+            if(index < postWidgets.length)
             {
-              setState(() => loading = true);
-              wp.getPost(748)
-                .then((res) {
-                  setState(() 
-                  {
-                      post = res;
-                  });
-                })
-                .whenComplete(() => setState(() {
-                  loading = false;
-                  pressed = true;
-                }));
+              return postWidgets[index]; 
+            } else //Last Element
+            {
+              //Create Column with Loading Animation and 'Load' Button
+              return Column
+              (
+                children: [
+                  Visibility(
+                    visible: loading, 
+                    child: CircularProgressIndicator()
+                  ),
+                  Visibility(
+                    visible: (totalPages > currentPage) && !loading, 
+                    child: FlatButton(
+                      child: Text('Weitere Ankündigungen laden'), 
+                      onPressed: () => loadNextPosts()
+                    )
+                  )
+                ]
+              );
             }
-          )]
+          }
         )
     );
   }
-}
-
-/*
-
-Center(
-            child: Column(children: <Widget>[
-          Text(content),
-          Visibility(child: CircularProgressIndicator(), visible: loading),
-          FlatButton(
-              child: Text('Press me!'),
-              onPressed: () {
-                setState(() {
-                  loading = true;
-                });
-                String newContent = '';
-                wp.getPosts().then((value) {
-                  for (Post post in value) {
-                    newContent += '${post.title.rendered} ${post.authorId} \n';
-                  }
-                }).whenComplete(() {
-                  setState(() {
-                    content += newContent;
-                    loading = false;
-                  });
-                });
-              })
-        ])));
-*/
-class RandomWords extends StatefulWidget {
-  @override
-  _RandomWordsState createState() {
-    return _RandomWordsState();
-  }
-}
-
-class _RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
-  final _saved = Set<WordPair>();
-  final _biggerFont = TextStyle(fontSize: 18.0);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Startup Name Generator'),
-        actions: [IconButton(icon: Icon(Icons.list), onPressed: _pushSaved)],
-      ),
-      body: _buildSuggestions(),
-    );
+  void afterFirstLayout(BuildContext context) {
+    // Calling the same function "after layout" to resolve the issue.
+    loadNextPosts();
   }
 
-  void _pushSaved() {
-    Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (BuildContext context) {
-      final tiles = _saved.map((WordPair pair) {
-        return ListTile(title: Text(pair.asPascalCase, style: _biggerFont));
-      });
-      final divided =
-          ListTile.divideTiles(context: context, tiles: tiles).toList();
-      return Scaffold(
-          appBar: AppBar(title: Text('Saved suggestions')),
-          body: ListView(children: divided));
-    }));
-  }
-
-  Widget _buildSuggestions() {
-    return ListView.builder(
-        padding: EdgeInsets.all(16.0),
-        itemBuilder: (context, i) {
-          if (i.isOdd) return Divider();
-
-          final index = i ~/ 2;
-          if (_suggestions.isEmpty) {
-            _suggestions.add(WordPair('test', 'test'));
-          }
-          if (index >= _suggestions.length) {
-            //Lets fetch the Posts
-            /*
-            var posts = wp.getPosts().then((value) {
-              for (wordPress.Post post in value) {
-                _suggestions
-                    .add(WordPair(post.title.rendered, post.author.name));
-              }
-            });
-            */
-
-            //_suggestions.add(WordPair('test', 'test'));
-          }
-          if (index >= _suggestions.length)
-            return null;
-          else
-            return _buildRow(_suggestions[index]);
-        });
-  }
-
-  Widget _buildRow(WordPair pair) {
-    final alreadySaved = _saved.contains(pair);
-
-    return ListTile(
-        title: Text(pair.asPascalCase, style: _biggerFont),
-        trailing: Icon(alreadySaved ? Icons.favorite : Icons.favorite_border,
-            color: alreadySaved ? Colors.red : null),
-        onTap: () {
-          setState(() {
-            if (alreadySaved) {
-              _saved.remove(pair);
-            } else {
-              _saved.add(pair);
-            }
-          });
-        });
+  /// Loads the next Page of Posts
+  void loadNextPosts() async
+  {
+    setState(() => loading = true);
+    //TODO: catch errors
+    currentPage += 1;
+    wp.getPosts(3, currentPage)
+      .then((PostCollection res) {
+        //Create Widget for Each post
+        List<PostWidget> widgets = List<PostWidget>();
+        res.posts.forEach((Post post) => widgets.add(PostWidget(post)));
+        //Update state
+        setState(() {
+          postWidgets.addAll(widgets);
+          totalPages = res.availablePages; 
+          currentPage = res.pageNumber; 
+        }); 
+      }).whenComplete(() => setState(() => loading = false));
   }
 }

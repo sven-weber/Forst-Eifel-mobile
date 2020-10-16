@@ -18,7 +18,7 @@ void main() {
           404));
 
       //Assert
-      expect(wp.getPosts(), throwsException);
+      expect(wp.getPosts(1,1), throwsException);
     });
 
     test('Invalid Json should throw exception', () {
@@ -29,22 +29,24 @@ void main() {
       when(client.get(any)).thenAnswer((_) async => http.Response('{', 200));
 
       //Assert
-      expect(wp.getPosts(), throwsException);
+      expect(wp.getPosts(1,1), throwsException);
     });
 
     test('Successfull Request should return List of Posts', () async {
       //Arrange
       final client = MockClient();
       WordPressImpl wp = WordPressImpl(basePath: hasePath, httpClient: client);
-      String json =
-          '[{"id":756,"date":"2020-10-11T10:55:45","link":"https://forst-eifel.de","title":{"rendered":"sd"},"content":{"rendered":"sd","protected":false},"author":1,"featured_media":758}]';
-      when(client.get(any)).thenAnswer((_) async => http.Response(json, 200));
+      String json = '[{"id":756,"date":"2020-10-11T10:55:45","link":"https://forst-eifel.de","title":{"rendered":"sd"},"content":{"rendered":"sd","protected":false},"author":1,"featured_media":758}]';
+      Map<String, String> header = {"x-wp-totalpages": "3"}; 
+      when(client.get(any)).thenAnswer((_) async => http.Response(json, 200, headers: header));
+      
       //Act
-      List<Post> posts = await wp.getPosts();
+      PostCollection res = await wp.getPosts(1,1);
 
       //Assert
-      expect(posts, isNotEmpty);
-      expect(posts.length, 1);
+      expect(res.posts, isNotEmpty);
+      expect(res.posts.length, 1);
+      expect(res.availablePages, 3);
     });
   });
 }

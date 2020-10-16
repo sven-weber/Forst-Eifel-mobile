@@ -59,6 +59,7 @@ class WordPressImpl implements WordPress {
   {
       try
       {
+        //Be carefull here, regarding to flutter spec all header values are lowercase!
         return [int.parse(response.headers[TOTALPAGES_HEADER]), ''];
       } catch (e)
       {
@@ -106,7 +107,7 @@ class WordPressImpl implements WordPress {
   /// The post Collection also contains the total number of pages
   /// [perPage] musst be in interval [1, ..., 100]
   Future<PostCollection> getPosts(int perPage, int page) async {
-    Uri target = _getUri('/$URL_POSTS', {'_fields': test.join(','), 'page': page, 'per_page' : perPage });
+    Uri target = _getUri('/$URL_POSTS', {'_fields': test.join(','), 'page': '$page', 'per_page' : '$perPage' });
 
     //Perform request, Parse json
     var res = await tryGetAndParseJson(target); 
