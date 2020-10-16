@@ -51,7 +51,7 @@ class PostDetailsWidget extends StatelessWidget {
 
     //Finally the text section
     Widget textSection = Container(
-      padding: const EdgeInsets.only(left: 20, right:20, top: 10, bottom: 40), 
+      padding: const EdgeInsets.only(left: 20, right:20, top: 10, bottom: 60), 
       child: Html(data: _post.content?.rendered)
     ); 
   
@@ -61,22 +61,29 @@ class PostDetailsWidget extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () => _sharePost(),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.share),
-                Container(
-                  margin: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    'Teilen',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400
+            child: Container(
+                padding: const EdgeInsets.only(top: 5, bottom: 5), 
+                child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.share,
+                    color: Colors.white,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      'Teilen',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              )
             )
           )
         ],

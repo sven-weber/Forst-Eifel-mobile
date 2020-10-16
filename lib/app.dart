@@ -14,7 +14,14 @@ class App extends StatelessWidget {
   }
 
   // All Theme Settings
-  final theme = ThemeData(primaryColor: Color(0xFF6B717E));
+  final theme = ThemeData(
+    primaryColor: Color(0xFF6B717E), 
+    accentColor: Color(0xFF419D34), 
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: Color(0xFF419D34), 
+      
+    )
+  );
 
   @override
   Widget build(BuildContext context) {

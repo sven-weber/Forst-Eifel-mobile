@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> with AfterLayoutMixin<HomeScree
     _scaffoldKey = GlobalKey<ScaffoldState>();
     postError = SnackBar(
       content: Text('Beim Laden der Ankündigungen ist ein Fehler aufgetreten.'), 
-      action: SnackBarAction(label: 'Erneut versuchen', onPressed: () => loadNextPosts())
+      action: SnackBarAction(label: 'Erneut versuchen', onPressed: () => _loadNextPosts())
     );
     //App Starts with loading
     _loading = true; 
@@ -44,48 +44,75 @@ class _HomeScreenState extends State<HomeScreen> with AfterLayoutMixin<HomeScree
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(title: Text('Wordpress Article')),
+        appBar: _buildAppBar(context),
         body: ListView.builder(
+          padding: const EdgeInsets.only(top: 15),
           itemCount: _postWidgets.length + 1,
-          itemBuilder: (BuildContext context, int index)
-          {
-            if(index < _postWidgets.length)
-            {
-              return _postWidgets[index]; 
-            } else //Last Element
-            {
-              //Create Column with Loading Animation and 'Load' Button
-              return Column
-              (
-                children: [
-                  Visibility(
-                    visible: _loading, 
-                    child: CircularProgressIndicator()
-                  ),
-                  Visibility(
-                    visible: (_totalPages > _currentPage) && !_loading, 
-                    child: FlatButton(
-                      child: Text('Weitere Ankündigungen laden'), 
-                      onPressed: () => loadNextPosts()
-                    )
-                  )
-                ]
-              );
-            }
-          }
+          itemBuilder: _buildListViewItems
         )
     );
+  }
+
+  /// Builds the AppBar for the App
+  AppBar _buildAppBar(BuildContext context)
+  {
+    return AppBar(
+      title: SizedBox(
+        height: kToolbarHeight,
+        child: Image.asset(
+            'images/icon_with_text.png', 
+            fit: BoxFit.contain,  
+        )
+      ), 
+      actions: [
+        IconButton(icon: Icon(Icons.settings, size: 30.0), onPressed: () => _routeToSettings(context))
+      ],
+    );
+  }
+
+  void _routeToSettings(BuildContext context)
+  {
+
+  }
+
+  Widget _buildListViewItems(BuildContext context, int index)
+  {
+    if(index < _postWidgets.length) {
+      return _postWidgets[index]; 
+    } else { 
+      //Last Element
+      //Create Column with Loading Animation and 'Load' Button
+      return Container(
+        padding: const EdgeInsets.only( bottom: 15),
+        child: Column
+        (
+          children: [
+            Visibility(
+              visible: _loading, 
+              child: CircularProgressIndicator()
+            ),
+            Visibility(
+              visible: (_totalPages > _currentPage) && !_loading, 
+              child: FlatButton(
+                child: Text('Weitere Ankündigungen laden'), 
+                onPressed: () => _loadNextPosts()
+              )
+            )
+          ]
+        )
+      );
+    }
   }
 
   // Calls the initial Method to load posts
   @override
   void afterFirstLayout(BuildContext context) {
     // Calling the same function "after layout" to resolve the issue.
-    loadNextPosts();
+    _loadNextPosts();
   }
 
   /// Loads the next Page of Posts
-  void loadNextPosts() async
+  void _loadNextPosts() async
   {
     setState(() => _loading = true);
     _currentPage += 1;

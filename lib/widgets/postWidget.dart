@@ -44,7 +44,7 @@ class PostWidget extends StatelessWidget {
     return GestureDetector(
         onTap: () => _routeToDetails(context),
         child: Card(
-            margin: const EdgeInsets.all(20),
+            margin: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -62,16 +62,18 @@ class PostWidget extends StatelessWidget {
   }
 
   String getContentPreview(Post post) {
+    RegExp removeNewlines = RegExp('[\t\n]+');
     //Parse the content as html
     final document = parse(post.content?.rendered);
     String text = parse(document.body.text).documentElement.text;
     //If the text if only short return
     if (text.length == 0) return 'Kein Vorschautext verfügbar.';
-    if (text.length < 150) return text;
+    if (text.length < 150) return text.replaceAll(removeNewlines, ' ');
     //Else cut to 50 characters
     //get the first space from index 50 backwards
     int lastIndex = text.lastIndexOf(' ', 149);
     //Return maximum 150 chars of the string with '...' at the end
-    return '${text.substring(0, lastIndex)} ...';
+    //Also replace one or more newlines with a space characeter
+    return '${text.substring(0, lastIndex)} ...'.replaceAll(removeNewlines, ' ');
   }
 }
