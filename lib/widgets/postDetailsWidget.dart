@@ -8,15 +8,19 @@ class PostDetailsWidget extends StatelessWidget {
   //Post that should be displayed in the Widget
   Post _post;
   //Snackbar to show when opening the link in browser failed
-  final browserError = SnackBar(content: Text('Link konnte nicht geöffnet werden'));
+  SnackBar browserError;
   //Key for the Scaffold to access in this class
-  final _scaffoldKey = GlobalKey<ScaffoldState>(); 
+  GlobalKey<ScaffoldState> _scaffoldKey;
   
-    /// Create new Details widget for the provided post
-  PostDetailsWidget(this._post);
+  /// Create new Details widget for the provided post
+  PostDetailsWidget(this._post) {
+    browserError = SnackBar(content: Text('Link konnte nicht geöffnet werden'));
+    _scaffoldKey = GlobalKey<ScaffoldState>(); 
+  }
 
   @override
   Widget build(BuildContext context) {
+
     //First build the title section
     Widget titleSection = Container(
       padding: const EdgeInsets.only(left: 20, top: 15),
@@ -77,7 +81,8 @@ class PostDetailsWidget extends StatelessWidget {
           )
         ],
     );
-
+    
+    //Return Scaffold containing all Sections
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
