@@ -42,7 +42,7 @@ class PostDetailsWidget extends StatelessWidget {
             child: Row(
               children: [
                 Icon(Icons.account_box_rounded),
-                Text('Weber Webdesign')
+                Text(_post.author?.name ?? "")
               ],
             ) 
           ), 

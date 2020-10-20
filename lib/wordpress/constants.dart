@@ -3,3 +3,4 @@ const TOTALPAGES_HEADER = 'x-wp-totalpages';
 
 const URL_POSTS = '$URL_WP_BASE/posts';
 const URL_MEDIA = '$URL_WP_BASE/media';
+const URL_AUTHOR = '$URL_WP_BASE/users';

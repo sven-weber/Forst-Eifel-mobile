@@ -13,32 +13,20 @@ import 'DTO/post.dart';
 import 'DTO/wordPressError.dart';
 import 'DTO/postCollection.dart'; 
 import 'DTO/media.dart'; 
+import 'DTO/author.dart'; 
 
 export 'DTO/post.dart';
 export 'DTO/rederObject.dart';
 export 'DTO/wordPressError.dart';
 export 'DTO/postCollection.dart'; 
 export 'DTO/media.dart'; 
+export 'DTO/author.dart'; 
 
 class WordPressImpl implements WordPress {
   // ******** Private Properties **********
   String _host;
   String _scheme;
   http.Client _client;
-  //TODO: Add other method to provide properties
-  List<String> test = [
-    'id',
-    'date',
-    'link',
-    'title',
-    'content',
-    'author',
-    'featured_media'
-  ];
-  List<String> test2 = [
-    'id', 
-    'source_url'
-  ];
 
   // ******** Constructor **********
   WordPressImpl({String basePath, http.Client httpClient}) {
@@ -92,8 +80,7 @@ class WordPressImpl implements WordPress {
   }
 
   /// Adds Media Objects to all posts in the provided List
-  Future<void> _fetchMediaForPosts(List<Post> posts) async
-  {
+  Future<void> _fetchMediaForPosts(List<Post> posts) async {
     var media = await getMedia(posts.map((Post post) => post.featuredMediaId).toSet());
     //Add the media to all Posts it occures
     for(Media m in media)
@@ -103,10 +90,25 @@ class WordPressImpl implements WordPress {
     }
   }
 
+  /// Adds Author Objects to all posts in the provided List
+  Future<void> _fetchAuthorForPosts(List<Post> posts) async {
+    var authors = await getAuthors(posts.map((Post post) => post.authorId).toSet());
+
+    //Add the author to all Posts
+    for(Author author in authors)
+    {
+      posts.where((element) => element.authorId == author.id)
+           .forEach((element) {element.author = author;});
+    }
+  }
+
   // ******** public Methods  **********
   /// Returns a List of Media Elements for the provided ids
   Future<List<Media>> getMedia(Set<int> ids) async { 
-    Uri target = _getUri('/$URL_MEDIA', {'_fields': test2.join(','), 'include' : ids.join(',')});
+    Uri target = _getUri('/$URL_MEDIA', {
+      '_fields': Media.usedFields.join(','), 
+      'include' : ids.join(',')
+    });
 
     //Perform request, Parse json
     var res = await tryGetAndParseJson(target); 
@@ -126,9 +128,36 @@ class WordPressImpl implements WordPress {
     }
   }
 
+  /// Returns a List of Authors for the provided ids
+  Future<List<Author>> getAuthors(Set<int> ids) async { 
+    Uri target = _getUri('/$URL_AUTHOR', {
+      '_fields': Author.usedFields.join(','), 
+      'include' : ids.join(',')
+    });
+
+    //Perform request, Parse json
+    var res = await tryGetAndParseJson(target); 
+    http.Response response = res[0];
+    var json = res[1];
+
+    if(response.isSuccessful())
+    {
+      List<Author> authors = List<Author>();
+      for(final author in json)
+      {
+        authors.add(Author.fromJson(author));
+      }
+      return authors; 
+    } else {
+      throw WordPressError.fromJson(json);
+    }
+  }
+
   /// Returns a specific post by its id
   Future<Post> getPost(int id) async {
-    Uri target = _getUri('/$URL_POSTS/$id', {'_fields': test.join(',')});
+    Uri target = _getUri('/$URL_POSTS/$id', {
+      '_fields': Post.usedFields.join(',')
+    });
 
     //Perform request, Parse json
     var res = await tryGetAndParseJson(target); 
@@ -149,8 +178,14 @@ class WordPressImpl implements WordPress {
   /// [perPage] musst be in interval [1, ..., 100]
   /// [fetchMedia] describes if the corresponding media objects 
   /// should also be fetched for the posts. Default: true
-  Future<PostCollection> getPosts(int perPage, int page, {bool fetchMedia = true}) async {
-    Uri target = _getUri('/$URL_POSTS', {'_fields': test.join(','), 'page': '$page', 'per_page' : '$perPage' });
+  /// [fetchAuthor] describes wheter the corresponding author objects
+  /// should also be fetched for the posts. Default: true
+  Future<PostCollection> getPosts(int perPage, int page, {bool fetchMedia = true, bool fetchAuthor = true}) async {
+    Uri target = _getUri('/$URL_POSTS', {
+      '_fields': Post.usedFields.join(','), 
+      'page': '$page', 
+      'per_page' : '$perPage' 
+    });
 
     //Perform request, Parse json
     var res = await tryGetAndParseJson(target); 
@@ -169,6 +204,7 @@ class WordPressImpl implements WordPress {
         posts.add(Post.fromJson(post));
       }
       if(fetchMedia) await _fetchMediaForPosts(posts);
+      if(fetchAuthor) await _fetchAuthorForPosts(posts);
       return PostCollection(posts, page, totalPages); 
     } else {
       throw WordPressError.fromJson(json);

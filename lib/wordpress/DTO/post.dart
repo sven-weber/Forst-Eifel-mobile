@@ -1,5 +1,6 @@
 import 'package:forst_eifel/wordpress/DTO/rederObject.dart';
 import 'media.dart';
+import 'author.dart'; 
 
 class Post {
   /// Id of the Post
@@ -20,6 +21,10 @@ class Post {
   /// Id of the Autor that created the Post
   int authorId;
 
+  /// Author that created the Post
+  /// Will only be set when fetching Author with the Post
+  Author author;
+
   /// ID of the Media Image featured in the Post
   int featuredMediaId;
 
@@ -38,4 +43,9 @@ class Post {
     authorId = json['author'];
     featuredMediaId = json['featured_media'];
   }
+
+  /// The fields that are used in this DTO
+  /// This Property can be used to recude api traffic 
+  /// by sending only parsed fields
+  static List<String> usedFields = ['id', 'date', 'link', 'title', 'content', 'author', 'featured_media'];
 }

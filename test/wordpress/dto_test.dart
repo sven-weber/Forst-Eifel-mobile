@@ -6,6 +6,7 @@ import 'package:forst_eifel/wordpress/DTO/rederObject.dart';
 import 'package:forst_eifel/wordpress/DTO/post.dart';
 import 'package:forst_eifel/wordpress/DTO/wordPressError.dart';
 import 'package:forst_eifel/wordpress/DTO/media.dart';
+import 'package:forst_eifel/wordpress/DTO/author.dart'; 
 
 import 'common.dart' as common;
 
@@ -14,6 +15,7 @@ void main() async {
   String objectJson = await File('${common.assetsPath}object.json').readAsString();
   String errorJson = await File('${common.assetsPath}error.json').readAsString();
   String mediaJson = await File('${common.assetsPath}media.json').readAsString();
+  String authorJson = await File('${common.assetsPath}author.json').readAsString();
 
   group('DTO Tests', () {
     test('Json Redered Object Parsing', () {
@@ -57,6 +59,16 @@ void main() async {
       //Assert
       expect(media.id, 759); 
       expect(media.sourceUrl, 'https://forst-eifel.de/wp-content/uploads/2020/10/Rueckseite-1.jpg');
+    });
+
+    test('Author Parsing', ()
+    {
+      //Act
+      Author media = Author.fromJson(json.decode(authorJson)); 
+
+      //Assert
+      expect(media.id, 1); 
+      expect(media.name, 'Weber Webdesign');
     });
   });
 }
