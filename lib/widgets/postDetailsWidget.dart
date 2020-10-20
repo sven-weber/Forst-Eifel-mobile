@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:forst_eifel/wordpress/wordPress.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share/share.dart'; 
 
+import 'package:forst_eifel/customCacheManager.dart';
+import 'package:forst_eifel/wordpress/wordPress.dart';
 class PostDetailsWidget extends StatelessWidget {
   //Post that should be displayed in the Widget
   Post _post;
@@ -103,11 +105,16 @@ class PostDetailsWidget extends StatelessWidget {
         bottomSheet: bottomSection,
         body: ListView(
           children: [
-            Image.asset(
-              'images/test.jpg',
-              width: 550, 
-              height: 220, 
-              fit: BoxFit.cover
+            CachedNetworkImage(
+                imageUrl: _post.featuredMedia?.sourceUrl ??  "",
+                progressIndicatorBuilder: (context, url, downloadProgress) {
+                        return Center(child: CircularProgressIndicator(value: downloadProgress.progress));
+                },
+                errorWidget: (context, url, error) => Icon(Icons.error),
+                width: 550,
+                height: 220,
+                fit: BoxFit.cover, 
+                cacheManager: CustomCacheManager.instance,
             ),
             titleSection, 
             userSection, 

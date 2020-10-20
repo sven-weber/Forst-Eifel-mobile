@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:forst_eifel/customCacheManager.dart';
 import 'package:forst_eifel/widgets/postDetailsWidget.dart';
 import 'package:forst_eifel/wordpress/wordPress.dart';
 import 'package:html/parser.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PostWidget extends StatelessWidget {
   //Post to be displayed in the Widget
@@ -48,11 +50,16 @@ class PostWidget extends StatelessWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Image.asset(
-                    'images/test.jpg',
-                    width: 550,
-                    height: 220,
-                    fit: BoxFit.cover
+                  CachedNetworkImage(
+                      imageUrl: _post.featuredMedia?.sourceUrl ??  "",
+                      progressIndicatorBuilder: (context, url, downloadProgress) {
+                        return Center(child: CircularProgressIndicator(value: downloadProgress.progress));
+                      },
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      width: 550,
+                      height: 220,
+                      fit: BoxFit.cover, 
+                      cacheManager: CustomCacheManager.instance,
                   ),
                   textSection
                 ]

@@ -92,9 +92,9 @@ class WordPressImpl implements WordPress {
   }
 
   /// Adds Media Objects to all posts in the provided List
-  void _fetchMediaForPosts(List<Post> posts) async
+  Future<void> _fetchMediaForPosts(List<Post> posts) async
   {
-    var media = await getMedia(posts.map((Post post) => post.featuredMediaId));
+    var media = await getMedia(posts.map((Post post) => post.featuredMediaId).toSet());
     //Add the media to all Posts it occures
     for(Media m in media)
     {
@@ -168,7 +168,7 @@ class WordPressImpl implements WordPress {
       for (final post in json) {
         posts.add(Post.fromJson(post));
       }
-      if(fetchMedia) _fetchMediaForPosts(posts);
+      if(fetchMedia) await _fetchMediaForPosts(posts);
       return PostCollection(posts, page, totalPages); 
     } else {
       throw WordPressError.fromJson(json);

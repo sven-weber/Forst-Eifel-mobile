@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:forst_eifel/widgets/postWidget.dart';
 import 'package:forst_eifel/wordpress/wordPress.dart';
