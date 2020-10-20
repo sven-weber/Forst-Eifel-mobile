@@ -110,7 +110,12 @@ class PostDetailsWidget extends StatelessWidget {
                 progressIndicatorBuilder: (context, url, downloadProgress) {
                         return Center(child: CircularProgressIndicator(value: downloadProgress.progress));
                 },
-                errorWidget: (context, url, error) => Icon(Icons.error),
+                errorWidget: (context, url, error) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [Text("Kein Bild verfügbar"), Icon(Icons.error)]); 
+                },
                 width: 550,
                 height: 220,
                 fit: BoxFit.cover, 
