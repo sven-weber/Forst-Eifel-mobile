@@ -1,4 +1,5 @@
 import 'package:forst_eifel/wordpress/DTO/rederObject.dart';
+import 'media.dart';
 
 class Post {
   /// Id of the Post
@@ -22,6 +23,9 @@ class Post {
   /// ID of the Media Image featured in the Post
   int featuredMediaId;
 
+  /// The Media that is features in the Post
+  /// Will only be set when fetching media with the Post
+  Media featuredMedia; 
   // *****************************************
   // ************ Deserialization ************
   // *****************************************

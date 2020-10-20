@@ -12,11 +12,13 @@ import 'wordPress.dart';
 import 'DTO/post.dart';
 import 'DTO/wordPressError.dart';
 import 'DTO/postCollection.dart'; 
+import 'DTO/media.dart'; 
 
 export 'DTO/post.dart';
 export 'DTO/rederObject.dart';
 export 'DTO/wordPressError.dart';
 export 'DTO/postCollection.dart'; 
+export 'DTO/media.dart'; 
 
 class WordPressImpl implements WordPress {
   // ******** Private Properties **********
@@ -32,6 +34,10 @@ class WordPressImpl implements WordPress {
     'content',
     'author',
     'featured_media'
+  ];
+  List<String> test2 = [
+    'id', 
+    'source_url'
   ];
 
   // ******** Constructor **********
@@ -85,7 +91,42 @@ class WordPressImpl implements WordPress {
     return [response, decode[0]]; 
   }
 
+  /// Adds Media Objects to all posts in the provided List
+  void _fetchMediaForPosts(List<Post> posts) async
+  {
+    var media = await getMedia(posts.map((Post post) => post.featuredMediaId));
+    //Add the media to all Posts it occures
+    for(Media m in media)
+    {
+      posts.where((element) => element.featuredMediaId == m.id)
+           .forEach((element) {element.featuredMedia = m;});
+    }
+  }
+
   // ******** public Methods  **********
+  /// Returns a List of Media Elements for the provided ids
+  Future<List<Media>> getMedia(Set<int> ids) async { 
+    Uri target = _getUri('/$URL_MEDIA', {'_fields': test2.join(','), 'include' : ids.join(',')});
+
+    //Perform request, Parse json
+    var res = await tryGetAndParseJson(target); 
+    http.Response response = res[0];
+    var json = res[1];
+
+    if(response.isSuccessful())
+    {
+      List<Media> media = List<Media>();
+      for(final medium in json)
+      {
+        media.add(Media.fromJson(medium));
+      }
+      return media; 
+    } else {
+      throw WordPressError.fromJson(json);
+    }
+  }
+
+  /// Returns a specific post by its id
   Future<Post> getPost(int id) async {
     Uri target = _getUri('/$URL_POSTS/$id', {'_fields': test.join(',')});
 
@@ -106,7 +147,9 @@ class WordPressImpl implements WordPress {
   /// using perPage number of posts per Page. 
   /// The post Collection also contains the total number of pages
   /// [perPage] musst be in interval [1, ..., 100]
-  Future<PostCollection> getPosts(int perPage, int page) async {
+  /// [fetchMedia] describes if the corresponding media objects 
+  /// should also be fetched for the posts. Default: true
+  Future<PostCollection> getPosts(int perPage, int page, {bool fetchMedia = true}) async {
     Uri target = _getUri('/$URL_POSTS', {'_fields': test.join(','), 'page': '$page', 'per_page' : '$perPage' });
 
     //Perform request, Parse json
@@ -125,6 +168,7 @@ class WordPressImpl implements WordPress {
       for (final post in json) {
         posts.add(Post.fromJson(post));
       }
+      if(fetchMedia) _fetchMediaForPosts(posts);
       return PostCollection(posts, page, totalPages); 
     } else {
       throw WordPressError.fromJson(json);
